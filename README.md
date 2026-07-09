@@ -1,122 +1,72 @@
 # 🚀 AI Learning Assistant
 
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green)
-![Gemini](https://img.shields.io/badge/Google-Gemini-orange)
-![ChromaDB](https://img.shields.io/badge/Vector%20DB-Chroma-purple)
-![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue)
+AI Learning Assistant is a FastAPI-based backend application that generates personalized learning roadmaps, recommends portfolio projects, and answers roadmap-specific questions using Retrieval-Augmented Generation (RAG).
 
-An AI-powered learning assistant that generates personalized learning roadmaps, recommends hands-on projects, and answers roadmap-specific questions using Retrieval-Augmented Generation (RAG).
-
-Built with **FastAPI**, **Google Gemini**, **ChromaDB**, **SQLite**, and **Docker**.
+The application uses **Google Gemini**, **Gemini Embeddings**, **ChromaDB**, and **SQLite** to generate accurate, structured, and context-aware responses.
 
 ---
 
-# 🌐 Live Demo
+# Features
 
-### API
-
-https://ai-learning-assistant-znmk.onrender.com
-
-### Interactive API Documentation
-
-https://ai-learning-assistant-znmk.onrender.com/docs
-
----
-
-# ✨ Features
-
-- 🎯 Personalized AI-generated learning roadmaps
-- 📚 Skill-based milestone planning
-- 💻 AI-generated portfolio project recommendations
-- 🤖 Roadmap-aware chatbot using RAG
-- 🔍 Semantic search with Chroma Vector Database
-- 📝 Markdown roadmap export
-- ✅ Strict JSON validation using Pydantic
-- 🐳 Dockerized for easy deployment
-- ⚡ FastAPI with automatic OpenAPI documentation
+- AI-generated personalized learning roadmaps
+- AI project recommendations
+- Roadmap-aware chatbot using RAG
+- Semantic search using ChromaDB
+- Markdown roadmap export
+- Structured JSON validation with Pydantic
+- Docker support
+- FastAPI with Swagger documentation
 
 ---
 
-# 🏗️ Architecture
+# Architecture Overview
 
 ```
-                   User
-                     │
-                     ▼
-              FastAPI Backend
-                     │
-      ┌──────────────┼──────────────┐
-      │              │              │
-      ▼              ▼              ▼
- Gemini LLM     SQLite DB     Chroma Vector DB
-      │                              │
-      └──────────────┬───────────────┘
-                     ▼
-            Retrieval-Augmented Chat
+User
+   │
+   ▼
+FastAPI Backend
+   │
+   ├── Roadmap Service
+   ├── Project Service
+   └── Chat Service
+          │
+          ▼
+ Google Gemini
+          │
+   Gemini Embeddings
+          │
+      ChromaDB
+          │
+   Retrieval-Augmented
+        Responses
 ```
+
+### Components
+
+- **FastAPI** exposes REST APIs.
+- **Gemini 2.5 Flash** generates structured roadmaps, projects, and chat responses.
+- **Gemini Embeddings** generate semantic embeddings.
+- **ChromaDB** stores roadmap embeddings for retrieval.
+- **SQLite** stores roadmap metadata.
+- **RAG Pipeline** retrieves relevant roadmap chunks before answering chat queries.
 
 ---
 
-# 🛠️ Tech Stack
+# Tech Stack
 
-## Backend
-
-- FastAPI
 - Python 3.11
+- FastAPI
+- Google Gemini
+- ChromaDB
 - SQLAlchemy
 - SQLite
-
-## AI
-
-- Google Gemini 2.5 Flash
-- Gemini Embeddings
-- Prompt Engineering
-
-## RAG
-
-- ChromaDB
-- Semantic Search
-- Vector Embeddings
-
-## Validation
-
-- Pydantic v2
-
-## Deployment
-
 - Docker
-- Render
+- Pydantic
 
 ---
 
-# 📂 Project Structure
-
-```
-app/
-│
-├── db/
-├── models/
-├── rag/
-├── routers/
-├── services/
-├── prompts.py
-├── resources.py
-├── config.py
-├── exceptions.py
-└── main.py
-
-tests/
-
-requirements.txt
-Dockerfile
-README.md
-```
-
----
-
-# ⚙️ Installation
+# Setup Instructions
 
 ## Clone Repository
 
@@ -126,42 +76,16 @@ git clone https://github.com/mrityunjay5004/AI-Learning-Assistant.git
 cd AI-Learning-Assistant
 ```
 
----
-
-## Create Virtual Environment
-
-### Windows
-
-```bash
-python -m venv venv
-
-venv\Scripts\activate
-```
-
-### Linux / macOS
-
-```bash
-python3 -m venv venv
-
-source venv/bin/activate
-```
-
----
-
 ## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-# 🔑 Environment Variables
-
-Create a `.env` file.
+## Create `.env`
 
 ```env
-GOOGLE_API_KEY=YOUR_GEMINI_API_KEY
+GOOGLE_API_KEY=YOUR_API_KEY
 
 GEMINI_MODEL=gemini-2.5-flash
 
@@ -170,23 +94,15 @@ GEMINI_EMBEDDING_MODEL=models/gemini-embedding-2
 DATABASE_URL=sqlite:///./data/app.db
 
 CHROMA_PERSIST_DIR=./data/chroma
-
-LOG_LEVEL=INFO
-
-LLM_MAX_RETRIES=3
-
-RAG_TOP_K=4
 ```
 
----
-
-# ▶️ Run Locally
+## Run
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Visit
+Swagger
 
 ```
 http://localhost:8000/docs
@@ -194,174 +110,116 @@ http://localhost:8000/docs
 
 ---
 
-# 🐳 Docker
+# Docker
 
-## Build Image
+Build
 
 ```bash
 docker build -t ai-learning-assistant .
 ```
 
-## Run Container
+Run
 
 ```bash
-docker run \
--p 8000:10000 \
+docker run -p 8000:10000 \
 -e GOOGLE_API_KEY=YOUR_API_KEY \
 ai-learning-assistant
 ```
 
-Swagger Documentation
+---
 
-```
-http://localhost:8000/docs
-```
+# API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| GET /health | Health check |
+| POST /roadmap | Generate roadmap |
+| POST /project | Recommend project |
+| POST /chat | Chat using roadmap context |
+| GET /roadmap/{id}/markdown | Export roadmap |
 
 ---
 
-# 🚀 API Endpoints
+# Assumptions Made
 
-## Health
-
-```
-GET /health
-```
-
-Checks whether the API is running.
+- Each roadmap belongs to one learning goal.
+- Chat queries always reference an existing roadmap.
+- Roadmaps are embedded immediately after generation.
+- Chat responses are generated only from retrieved roadmap context.
+- Single-user workflow is assumed.
 
 ---
 
-## Generate Learning Roadmap
+# AI Tools / Frameworks Used
 
-```
-POST /roadmap
-```
-
-Example
-
-```json
-{
-  "goal_title": "Backend Developer",
-  "experience": "Less than 1 year",
-  "known_skills": [
-    "Python",
-    "SQL"
-  ],
-  "learning_style": "Project Based",
-  "weekly_hours": 15
-}
-```
+| Tool | Purpose |
+|------|---------|
+| Google Gemini 2.5 Flash | Roadmap, project and chat generation |
+| Gemini Embeddings | Semantic embeddings |
+| ChromaDB | Vector database |
+| FastAPI | REST API |
+| Pydantic | Schema validation |
+| Tenacity | Retry logic |
 
 ---
 
-## Generate Project Recommendation
+# Prompt Design Decisions
 
-```
-POST /project
-```
-
-Example
-
-```json
-{
-  "roadmap_id": "<ROADMAP_ID>"
-}
-```
+- Separate system prompts and user prompts.
+- Enforce structured JSON responses.
+- Validate every response using Pydantic.
+- Retry malformed responses automatically.
+- Low temperature for deterministic outputs.
+- Chat responses are grounded using retrieved roadmap context to reduce hallucinations.
 
 ---
 
-## Chat with Roadmap
+# Deployment
 
-```
-POST /chat
-```
+The project is Dockerized and deployed on **Render**.
 
-Example
+**Live API**
 
-```json
-{
-  "roadmap_id": "<ROADMAP_ID>",
-  "message": "What should I learn first?"
-}
-```
+https://ai-learning-assistant-znmk.onrender.com
+
+**Swagger Docs**
+
+https://ai-learning-assistant-znmk.onrender.com/docs
 
 ---
 
-## Export Markdown
+# Demo Video
 
-```
-GET /roadmap/{roadmap_id}/markdown
-```
+A 3–5 minute screen recording demonstrates:
 
-Exports the roadmap as Markdown.
+- Roadmap generation
+- Project recommendation
+- Chat endpoint
+- Swagger documentation
+- Overall architecture
 
----
-
-# 🧠 Retrieval-Augmented Generation (RAG)
-
-The chatbot answers questions using the generated roadmap instead of relying solely on the LLM.
-
-Workflow:
-
-1. Roadmap is generated.
-2. Roadmap is chunked.
-3. Chunks are embedded using Gemini Embeddings.
-4. Stored inside ChromaDB.
-5. User question is embedded.
-6. Relevant chunks retrieved.
-7. Context + Question sent to Gemini.
-8. Grounded response returned.
+*(Add your Loom/Drive link before submission.)*
 
 ---
 
-# 🧪 Running Tests
+# Approximate Time Spent
 
-```bash
-pytest
-```
+Approximately **10 hours**, including:
 
----
-
-# 📦 Deployment
-
-This project is containerized with Docker and can be deployed on:
-
-- Render
-- Railway
-- Fly.io
-- Any Docker-compatible cloud platform
-
-The deployed application includes automatic Swagger documentation.
+- Backend development
+- Gemini integration
+- RAG implementation
+- Testing & debugging
+- Dockerization
+- Deployment
+- Documentation
 
 ---
 
-# 📈 Future Improvements
-
-- User authentication
-- Learning progress tracking
-- Roadmap editing
-- Multiple LLM providers
-- Course recommendations
-- PDF roadmap export
-- Learning analytics dashboard
-- Multi-language support
-
----
-
-# 👨‍💻 Author
+# Author
 
 **Mrityunjay Tiwari**
 
-GitHub
+GitHub: https://github.com/mrityunjay5004
 
-https://github.com/mrityunjay5004
-
-LinkedIn
-
-https://www.linkedin.com/in/mrityunjaytiwari5004/
-
----
-
-# ⭐ Support
-
-If you found this project useful, consider giving it a ⭐ on GitHub.
+LinkedIn: https://www.linkedin.com/in/mrityunjaytiwari5004
