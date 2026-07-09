@@ -6,6 +6,42 @@ The application uses **Google Gemini**, **Gemini Embeddings**, **ChromaDB**, and
 
 ---
 
+# 🌐 Live Demo
+
+### 🚀 Live API
+
+https://ai-learning-assistant-znmk.onrender.com
+
+### 📖 Interactive API Documentation (Swagger UI)
+
+https://ai-learning-assistant-znmk.onrender.com/docs
+
+### 📄 OpenAPI Specification
+
+https://ai-learning-assistant-znmk.onrender.com/openapi.json
+
+### ❤️ Health Check
+
+https://ai-learning-assistant-znmk.onrender.com/health
+
+---
+
+# 📦 Deployment
+
+The application is fully containerized using Docker and deployed on **Render**.
+
+### Live Application
+
+- **API:** https://ai-learning-assistant-znmk.onrender.com
+- **Swagger UI:** https://ai-learning-assistant-znmk.onrender.com/docs
+- **OpenAPI JSON:** https://ai-learning-assistant-znmk.onrender.com/openapi.json
+- **Health Check:** https://ai-learning-assistant-znmk.onrender.com/health
+
+The project can also be deployed on any Docker-compatible cloud platform such as Render, Railway, or Fly.io.
+
+---
+
+
 # Features
 
 - AI-generated personalized learning roadmaps
@@ -19,37 +55,107 @@ The application uses **Google Gemini**, **Gemini Embeddings**, **ChromaDB**, and
 
 ---
 
-# Architecture Overview
+# 🏗️ Architecture Overview
 
+The AI Learning Assistant follows a modular, service-oriented architecture where each component has a single responsibility. The system combines LLM-based generation with Retrieval-Augmented Generation (RAG) to provide personalized and context-aware learning assistance.
+
+```text
+                           +----------------------+
+                           |        Client        |
+                           |  Swagger / Postman   |
+                           +----------+-----------+
+                                      |
+                                      v
+                          +-------------------------+
+                          |     FastAPI Backend     |
+                          |      REST Endpoints     |
+                          +-----------+-------------+
+                                      |
+        +-----------------------------+-----------------------------+
+        |                             |                             |
+        v                             v                             v
++------------------+        +------------------+        +------------------+
+| Roadmap Service  |        | Project Service  |        |   Chat Service   |
++--------+---------+        +--------+---------+        +--------+---------+
+         |                           |                           |
+         |                           |                           |
+         +-------------+-------------+---------------------------+
+                       |
+                       v
+              +----------------------+
+              | Google Gemini 2.5    |
+              | Flash LLM            |
+              +----------+-----------+
+                         |
+          +--------------+--------------+
+          |                             |
+          v                             v
++----------------------+      +----------------------+
+| Structured JSON      |      | Gemini Embeddings    |
+| Roadmap / Project    |      +----------+-----------+
++----------------------+                 |
+                                         v
+                               +----------------------+
+                               |      ChromaDB        |
+                               | Vector Store (RAG)   |
+                               +----------+-----------+
+                                          |
+                                          v
+                               Retrieved Relevant Chunks
+                                          |
+                                          v
+                               Context-Aware AI Response
 ```
-User
-   │
-   ▼
-FastAPI Backend
-   │
-   ├── Roadmap Service
-   ├── Project Service
-   └── Chat Service
-          │
-          ▼
- Google Gemini
-          │
-   Gemini Embeddings
-          │
-      ChromaDB
-          │
-   Retrieval-Augmented
-        Responses
-```
 
-### Components
+## Component Responsibilities
 
-- **FastAPI** exposes REST APIs.
-- **Gemini 2.5 Flash** generates structured roadmaps, projects, and chat responses.
-- **Gemini Embeddings** generate semantic embeddings.
-- **ChromaDB** stores roadmap embeddings for retrieval.
-- **SQLite** stores roadmap metadata.
-- **RAG Pipeline** retrieves relevant roadmap chunks before answering chat queries.
+### FastAPI
+- Exposes REST APIs
+- Handles request validation
+- Returns structured JSON responses
+
+### Roadmap Service
+- Generates personalized learning roadmaps
+- Estimates learning hours
+- Organizes skills, tasks, subtasks, and resources
+
+### Project Service
+- Recommends portfolio projects based on the generated roadmap
+- Suggests appropriate tech stacks and project features
+
+### Chat Service (RAG)
+- Converts user queries into embeddings
+- Retrieves relevant roadmap chunks from ChromaDB
+- Sends retrieved context to Gemini
+- Returns grounded, roadmap-aware answers
+
+### Google Gemini
+- Generates structured roadmap and project recommendations
+- Produces chat responses
+- Generates semantic embeddings
+
+### ChromaDB
+- Stores roadmap embeddings
+- Performs semantic similarity search
+- Returns the most relevant chunks for Retrieval-Augmented Generation
+
+### SQLite
+- Stores roadmap metadata and application data
+- Maintains roadmap IDs used during retrieval
+
+---
+
+## Request Flow
+
+1. User sends a request to the FastAPI API.
+2. Roadmap or project requests are processed directly using Google Gemini.
+3. Generated roadmaps are chunked and embedded.
+4. Embeddings are stored in ChromaDB.
+5. During chat, the user query is embedded.
+6. ChromaDB retrieves the most relevant roadmap chunks.
+7. Retrieved context is combined with the user query.
+8. Gemini generates a grounded response using the retrieved context.
+9. FastAPI returns the final structured response.
 
 ---
 
@@ -198,7 +304,7 @@ A 3–5 minute screen recording demonstrates:
 - Swagger documentation
 - Overall architecture
 
-*(Add your Loom/Drive link before submission.)*
+*(Adding.)*
 
 ---
 
